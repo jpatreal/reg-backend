@@ -55,9 +55,9 @@ router.get('/my-events/:userId', async (req, res) => {
 router.get('/registered', async (req, res) => {
   try {
     let event = await Event.findOne({ _id: req.body.eventId }) // Changed find --> findOne para Object ra e send sa mongoose query
-    for (let key in event) {
-      if (event.registrants[key] == req.body.userId) { //transfer the [key] to the right array (di na array ang event kay agi sa findOne)
-        res.status(200).send(true)
+    for (let i = 0; i < event.registrants.length; i++) {
+      if (event.registrants[i] == req.body.userId) { //transfer the [key] to the right array (di na array ang event kay agi sa findOne)
+        res.send(true)
       }
     }
   } catch (error) {
