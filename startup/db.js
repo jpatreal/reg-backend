@@ -7,11 +7,11 @@ module.exports = function () {
     useCreateIndex: true,
     useFindAndModify: false,
     keepAlive: true,
-    socketTimeoutMS: 30000,
-    reconnectTries: 30000
+    useUnifiedTopology: true,
+    socketTimeoutMS: 30000
   }
 
-  mongoose.connect('', option) // Insert MongoDB SRV String here
+  mongoose.connect('mongodb+srv://event-reg:qwerty123456@firstcluster-xiuty.mongodb.net/eventReg?retryWrites=true&w=majority', option)
     .then(() => {
       console.log('Connected to MongoDB | Server is up and running.')
     })

@@ -5,7 +5,7 @@ const app = express()
 app.use(bodyParser.json()) // To parse incoming data from Vue
 app.use(bodyParser.urlencoded({ extended: true }))
 
-// require('./startup/db')() Uncomment after we have the MongoDB SRV
+require('./startup/db')()
 require('./startup/routes')(app)
 
 // Initial Test if localhost:3000 is properly serve
