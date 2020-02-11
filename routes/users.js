@@ -8,12 +8,12 @@ const { Event } = require('../models/event')
 router.post('/signup', async (req, res) => {
   try {
     await User.findOne({ email: req.body.email })
-      .then(user => {
+      .then(async user => {
         if (user) {
           return res.status(400).send('Email already taken!')
         } else {
           const client = new User(req.body.user)
-          client.save()
+          await client.save()
           res.status(201).send({ client })
         }
       })
@@ -29,6 +29,7 @@ router.post('/login', async (req, res) => {
 
     res.status(200).send({user, token})
   } catch (error) {
+    console.log(error)
     res.status(400).send(error.message)
   }
 })
