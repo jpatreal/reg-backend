@@ -1,16 +1,18 @@
 const express = require('express')
 const router = express.Router()
+const adminAuth = require('../middleware/admin-auth')
 
 const { Event } = require('../models/event')
 
-router.post('/', async (req, res) => {
+router.post('/', adminAuth, async (req, res) => {
   try {
     const event = new Event({
       title: req.body.title,
-      name: req.body.name,
       venue: req.body.venue,
       place: req.body.place,
       details: req.body.details,
+      startTime: req.body.startTime,
+      endTime: req.body.endTime,
       date: req.body.date
     })
 
@@ -32,10 +34,10 @@ router.get('/all', async (req, res) => {
   }
 })
 
-router.patch('/cancel/:eventId', async (req, res) => {
+router.patch('/cancel', adminAuth, async (req, res) => {
   try {
     const updatedEvent = await Event.findOneAndUpdate(
-      { "_id": req.params.eventId },
+      { "_id": req.body.eventId },
       { "cancelled": true },
       { new: true })
 
@@ -45,12 +47,10 @@ router.patch('/cancel/:eventId', async (req, res) => {
   }
 })
 
-router.delete('/:eventId', async (req, res) => {
+router.delete('/remove/:eventId', adminAuth, async (req, res) => {
   try {
-    await Event.deleteOne({ _id: req.params.eventId })
-      .then(result => {
-        res.status(200).send('Event removed')
-      })
+    await Event.findOneAndDelete({ _id: req.params.eventId })
+    res.status(200).send('removed')
   } catch (error) {
     res.status(400).send(error.message)
   }

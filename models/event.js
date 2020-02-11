@@ -6,10 +6,6 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  name: {
-    type: String,
-    required: true
-  },
   venue: {
     type: String,
     required: true
@@ -23,16 +19,20 @@ const eventSchema = new mongoose.Schema({
     required: true
   },
   date: {
-    type: String,
+    type: Date,
+    required: true
+  },
+  startTime: {
+    type: Date,
+    required: true
+  },
+  endTime: {
+    type: Date,
     required: true
   },
   cancelled: {
     type: Boolean,
     default: false
-  },
-  time: {
-    type: String,
-    required: true
   },
   registrants: [{
       type: mongoose.Schema.Types.ObjectId,

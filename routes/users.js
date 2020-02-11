@@ -12,15 +12,7 @@ router.post('/signup', async (req, res) => {
         if (user) {
           return res.status(400).send('Email already taken!')
         } else {
-          const client = new User({
-            firstName: req.body.firstName,
-            midName: req.body.midName,
-            lastName: req.body.lastName,
-            phoneNum: req.body.phoneNum,
-            address: req.body.address,
-            email: req.body.email,
-            password: req.body.password
-          })
+          const client = new User(req.body.user)
           client.save()
           res.status(201).send({ client })
         }
@@ -41,10 +33,19 @@ router.post('/login', async (req, res) => {
   }
 })
 
-router.get('/my-events/:userId', async (req, res) => {
+router.get('/me', auth, async (req, res) => {
   try {
-    const events = await User.findOne({ _id: req.params.userId })
-      .populate('events', '-registrants -_id -__v')
+    const user = await User.findOne({ _id: req.user._id })
+    res.status(200).send({ user })
+  } catch (error) {
+    res.status(400).send(error.message)
+  }
+})
+
+router.get('/my-events', auth, async (req, res) => {
+  try {
+    const events = await User.findOne({ _id: req.user._id })
+      .populate('events', '-registrants -__v')
 
       res.status(200).send(events)
   } catch (error) {
@@ -52,11 +53,11 @@ router.get('/my-events/:userId', async (req, res) => {
   }
 })
 
-router.get('/registered', async (req, res) => {
+router.get('/registered', auth, async (req, res) => {
   try {
     let event = await Event.findOne({ _id: req.body.eventId }) // Changed find --> findOne para Object ra e send sa mongoose query
     for (let i = 0; i < event.registrants.length; i++) {
-      if (event.registrants[i] == req.body.userId) { //transfer the [key] to the right array (di na array ang event kay agi sa findOne)
+      if (event.registrants[i] == req.user._id) { //transfer the [key] to the right array (di na array ang event kay agi sa findOne)
         res.send(true)
       }
     }

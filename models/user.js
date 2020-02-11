@@ -9,11 +9,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     maxlength: 50
   },
-  midName: {
-    type: String,
-    required: true,
-    maxlength: 50
-  },
   lastName: {
     type: String,
     required: true,

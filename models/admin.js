@@ -21,9 +21,12 @@ const adminSchema = new mongoose.Schema({
   }
 })
 
-adminSchema.methods.toJSON() = function () {
+adminSchema.plugin(mongoosePaginate)
+
+adminSchema.methods.toJSON = function () {
   const admin = this
   const adminObject = admin.toObject()
+  
   delete adminObject.password
 
   return adminObject
