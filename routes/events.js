@@ -11,9 +11,8 @@ router.post('/', adminAuth, async (req, res) => {
       venue: req.body.venue,
       place: req.body.place,
       details: req.body.details,
-      startTime: req.body.startTime,
-      endTime: req.body.endTime,
-      date: req.body.date
+      startDateTime: req.body.startDateTime,
+      endDateTime: req.body.endDateTime
     })
 
     event.save()
@@ -29,6 +28,18 @@ router.get('/all', async (req, res) => {
       .then(result => {
         res.status(200).send(result)
       })
+  } catch (error) {
+    res.status(400).send(error.message)
+  }
+})
+
+router.get('/view-one', async (req, res) => {
+  try {
+    let event = await Event.findOne({ _id: req.body.eventId })
+      .select('-__v')
+      .populate('registrants', '-events -__v')
+
+    res.status(200).send(event)
   } catch (error) {
     res.status(400).send(error.message)
   }

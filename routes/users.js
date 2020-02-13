@@ -56,13 +56,15 @@ router.get('/my-events', auth, async (req, res) => {
 
 router.get('/registered', auth, async (req, res) => {
   try {
-    let event = await Event.findOne({ _id: req.body.eventId }) // Changed find --> findOne para Object ra e send sa mongoose query
+    let event = await Event.findOne({ _id: req.body.eventId })
     for (let i = 0; i < event.registrants.length; i++) {
-      if (event.registrants[i] == req.user._id) { //transfer the [key] to the right array (di na array ang event kay agi sa findOne)
+      if (event.registrants[i] == req.user._id) {
+        
         res.send(true)
       }
     }
   } catch (error) {
+    console.log(error)
     res.status(400).send(error.message)
   }
 })
@@ -80,6 +82,27 @@ router.patch('/register-event', auth, async (req, res) => {
     let event = await Event.findByIdAndUpdate(
       { "_id": eventId },
       { $push: { "registrants": userId } },
+      { new: true })  
+
+    res.status(200).send({ user, event })  
+  } catch (error) {
+    res.status(400).send(error.message)
+  }
+})
+
+router.patch('/unregister-event', auth, async (req, res) => {
+  try {
+    const userId = req.user._id
+    const eventId = req.body.eventId
+
+    let user = await User.findByIdAndUpdate(
+      { "_id": userId },
+      { $pull: { "events": eventId } },
+      { new: true })
+
+    let event = await Event.findByIdAndUpdate(
+      { "_id": eventId },
+      { $pull: { "registrants": userId } },
       { new: true })  
 
     res.status(200).send({ user, event })  
